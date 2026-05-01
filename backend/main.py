@@ -21,9 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to Team Task Manager API"}
+# API Routes will be below
 
 # --- AUTH ROUTES ---
 
@@ -143,3 +141,22 @@ def delete_task(task_id: int, db: Session = Depends(get_db), current_user: model
     db.delete(db_task)
     db.commit()
     return None
+
+# --- FRONTEND SERVING ---
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+
+# Mount the static files (JS, CSS, assets)
+static_path = os.path.join(os.path.dirname(__file__), "static")
+
+if os.path.exists(static_path):
+    app.mount("/assets", StaticFiles(directory=os.path.join(static_path, "assets")), name="assets")
+
+# Catch-all route to serve the React index.html
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    index_path = os.path.join(static_path, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"message": "Frontend build not found. Please run 'npm run build' in the frontend directory."}

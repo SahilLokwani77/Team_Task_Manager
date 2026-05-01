@@ -8,9 +8,10 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
-  // In production, this would be an environment variable. For Railway, we can leave it to just hitting the relative path if served together, or hardcode/detect.
-  // Using an empty string base URL if we set up a proxy, or explicit localhost for dev.
-  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  // Since we are now serving the frontend from the backend in production, we can just use the relative path (empty string)
+  // But in local development, if we run them separately, we default to localhost:8000
+  const isDevelopment = window.location.hostname === 'localhost' && window.location.port === '5173';
+  const apiBase = isDevelopment ? 'http://localhost:8000' : '';
 
   useEffect(() => {
     if (token) {
