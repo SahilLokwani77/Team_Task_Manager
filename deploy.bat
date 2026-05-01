@@ -5,7 +5,17 @@ echo =========================================
 echo.
 
 set GITHUB_USERNAME=SahilLokwani77
+set /p GITHUB_EMAIL="Enter your GitHub Email Address (for SahilLokwani77): "
 set /p REPO_NAME="Enter your new GitHub repository name (e.g. team-task-manager): "
+
+echo.
+echo Clearing old GitHub credentials so you can log in as SahilLokwani77...
+cmdkey /delete:LegacyGeneric:target=git:https://github.com >nul 2>&1
+
+echo.
+echo Setting new Git Profile locally...
+git config --global user.name "%GITHUB_USERNAME%"
+git config --global user.email "%GITHUB_EMAIL%"
 
 echo.
 echo Initializing Git...
