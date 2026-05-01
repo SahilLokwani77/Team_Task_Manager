@@ -24,7 +24,16 @@ const Login = () => {
       }
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Authentication failed');
+      if (err.response) {
+        const errorDetail = err.response.data?.detail;
+        if (Array.isArray(errorDetail)) {
+          setError(errorDetail[0].msg);
+        } else {
+          setError(errorDetail || 'Authentication failed');
+        }
+      } else {
+        setError("Network Error: Is the backend server running?");
+      }
     }
   };
 
